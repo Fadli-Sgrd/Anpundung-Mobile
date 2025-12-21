@@ -1,33 +1,61 @@
 import 'package:flutter/material.dart';
 
-class EdukasiScreen extends StatelessWidget {
+class EdukasiScreen extends StatefulWidget {
   const EdukasiScreen({super.key});
 
   @override
+  State<EdukasiScreen> createState() => _EdukasiScreenState();
+}
+
+class _EdukasiScreenState extends State<EdukasiScreen> {
+  String selectedCategory = "Semua";
+
+  @override
   Widget build(BuildContext context) {
-    // Data dummy materi edukasi
-    final List<Map<String, String>> materials = [
+    // Data dummy materi edukasi dengan kategori
+    final List<Map<String, dynamic>> materials = [
       {
         "title": "Apa itu Pungli?",
         "desc": "Pungutan Liar (Pungli) adalah pengenaan biaya di tempat yang tidak seharusnya biaya dikenakan atau dipungut. Kegiatan ini melanggar hukum dan merugikan masyarakat.",
+        "category": "Definisi",
         "icon": "question_mark"
       },
       {
         "title": "Jenis-Jenis Pungli",
         "desc": "1. Pungli Pelayanan Publik (KTP, SIM, Surat Tanah)\n2. Pungli Parkir Liar\n3. Pungli di Sekolah/Pendidikan\n4. Pungli Perizinan Usaha",
+        "category": "Jenis",
         "icon": "list"
       },
       {
         "title": "Pasal Hukum & Sanksi",
         "desc": "Pelaku pungli dapat dijerat Pasal 368 KUHP dengan ancaman penjara maksimal 9 tahun. Jangan takut melapor karena hukum melindungi korban!",
+        "category": "Hukum",
         "icon": "gavel"
       },
       {
         "title": "Cara Melapor Aman",
         "desc": "Gunakan fitur 'Laporan' di aplikasi Anpundung. Sertakan bukti foto atau lokasi. Identitasmu kami jamin kerahasiaannya (Anonim).",
+        "category": "Tips",
         "icon": "shield"
       },
+      {
+        "title": "Proteksi Hukum Pelapor",
+        "desc": "Undang-undang melindungi pelapor pungli. Anda tidak akan dipersalahkan atas laporan yang jujur. Lembaga Perlindungan Saksi (LPSK) siap membantu jika diperlukan.",
+        "category": "Hukum",
+        "icon": "protection"
+      },
+      {
+        "title": "Tips Menghadapi Pungli",
+        "desc": "1. Tetap tenang dan jangan panik\n2. Catat identitas pelaku dan saksi\n3. Dokumentasikan kejadian (foto/video)\n4. Laporkan segera ke pihak berwenang\n5. Gunakan aplikasi Anpundung untuk laporan aman",
+        "category": "Tips",
+        "icon": "tips"
+      },
     ];
+
+    // Filter berdasarkan kategori yang dipilih
+    final filtered = selectedCategory == "Semua"
+        ? materials
+        : materials.where((m) => m["category"] == selectedCategory).toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
@@ -69,14 +97,50 @@ class EdukasiScreen extends StatelessWidget {
               ],
             ),
           ),
+
+          const SizedBox(height: 25),
           
+          // Kategori Filter
+          const Text(
+            "Kategori",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF163172)),
+          ),
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: ["Semua", "Definisi", "Jenis", "Hukum", "Tips"].map((category) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: GestureDetector(
+                    onTap: () => setState(() => selectedCategory = category),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: selectedCategory == category ? const Color(0xFF1E56A0) : Colors.grey[200],
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        category,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: selectedCategory == category ? Colors.white : Colors.grey[700],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+
           const SizedBox(height: 25),
           const Text("Materi Penting", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF163172))),
           const SizedBox(height: 10),
 
           // --- LIST MATERI (ACCORDION) ---
-          // Kita loop data di atas jadi widget
-          ...materials.map((item) {
+          ...filtered.map((item) {
             return Container(
               margin: const EdgeInsets.only(bottom: 15),
               decoration: BoxDecoration(
@@ -85,8 +149,7 @@ class EdukasiScreen extends StatelessWidget {
                 boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 5, offset: Offset(0, 2))],
               ),
               child: Theme(
-                //ilangin garis border bawaan flutter pas dibuka
-                data: Theme.of(context).copyWith(dividerColor: Colors.transparent), 
+                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                 child: ExpansionTile(
                   leading: Container(
                     padding: const EdgeInsets.all(8),
@@ -96,6 +159,10 @@ class EdukasiScreen extends StatelessWidget {
                   title: Text(
                     item['title']!,
                     style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF163172)),
+                  ),
+                  subtitle: Text(
+                    item['category']!,
+                    style: const TextStyle(fontSize: 11, color: Colors.grey),
                   ),
                   children: [
                     Padding(
@@ -122,6 +189,8 @@ class EdukasiScreen extends StatelessWidget {
       case 'list': return Icons.format_list_bulleted_rounded;
       case 'gavel': return Icons.gavel_rounded;
       case 'shield': return Icons.security_rounded;
+      case 'protection': return Icons.verified_user_rounded;
+      case 'tips': return Icons.lightbulb_rounded;
       default: return Icons.info_outline;
     }
   }
