@@ -3,9 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Pastikan path import ini sesuai sama struktur folder kamu ya
 import '../cubit/report_cubit.dart'; 
 import '../models/report_model.dart';
+import 'laporan_detail_screen.dart';
 
-class LaporanScreen extends StatelessWidget {
+class LaporanScreen extends StatefulWidget {
   const LaporanScreen({super.key});
+
+  @override
+  State<LaporanScreen> createState() => _LaporanScreenState();
+}
+
+class _LaporanScreenState extends State<LaporanScreen> {
+  List<String> selectedPhotos = []; // Untuk nyimpen foto yang dipilih
 
   // --- FUNGSI: TAMPILKAN FORM TAMBAH LAPORAN ---
  
@@ -14,90 +22,168 @@ class LaporanScreen extends StatelessWidget {
     final titleController = TextEditingController();
     final descController = TextEditingController();
     final locController = TextEditingController();
+    List<String> formPhotos = [];
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // Biar pas keyboard muncul, form-nya naik ke atas (gak ketutup)
       backgroundColor: Colors.transparent, // Transparan biar kita bisa bikin rounded corner sendiri
-      builder: (ctx) => Container(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(ctx).viewInsets.bottom + 20, // Jarak biar gak nempel keyboard
-          top: 25,
-          left: 20,
-          right: 20,
-        ),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(25)), // Sudut atas melengkung
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min, // Ukurannya ngikutin isi konten aja
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header Form
-            Center(
-              child: Container(
-                width: 50,
-                height: 5,
-                decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10)),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              "Buat Laporan Baru",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF163172)),
-            ),
-            const Text("Identitas pelapor akan disamarkan (Anonim).", style: TextStyle(color: Colors.grey)),
-            
-            const SizedBox(height: 25),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setState) => Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 20, // Jarak biar gak nempel keyboard
+            top: 25,
+            left: 20,
+            right: 20,
+          ),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25)), // Sudut atas melengkung
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Ukurannya ngikutin isi konten aja
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header Form
+                Center(
+                  child: Container(
+                    width: 50,
+                    height: 5,
+                    decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10)),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "Buat Laporan Baru",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF163172)),
+                ),
+                const Text("Identitas pelapor akan disamarkan (Anonim).", style: TextStyle(color: Colors.grey)),
+                
+                const SizedBox(height: 25),
 
-            // Input Judul
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(
-                labelText: "Judul Pungli",
-                prefixIcon: const Icon(Icons.title, color: Color(0xFF1E56A0)),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-                filled: true,
-                fillColor: const Color(0xFFF6F6F6),
-              ),
-            ),
-            const SizedBox(height: 15),
+                // Input Judul
+                TextField(
+                  controller: titleController,
+                  decoration: InputDecoration(
+                    labelText: "Judul Pungli",
+                    prefixIcon: const Icon(Icons.title, color: Color(0xFF1E56A0)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                    filled: true,
+                    fillColor: const Color(0xFFF6F6F6),
+                  ),
+                ),
+                const SizedBox(height: 15),
 
-            // Input Lokasi
-            TextField(
-              controller: locController,
-              decoration: InputDecoration(
-                labelText: "Lokasi Kejadian",
-                prefixIcon: const Icon(Icons.location_on, color: Color(0xFF1E56A0)),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-                filled: true,
-                fillColor: const Color(0xFFF6F6F6),
-              ),
-            ),
-            const SizedBox(height: 15),
+                // Input Lokasi
+                TextField(
+                  controller: locController,
+                  decoration: InputDecoration(
+                    labelText: "Lokasi Kejadian",
+                    prefixIcon: const Icon(Icons.location_on, color: Color(0xFF1E56A0)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                    filled: true,
+                    fillColor: const Color(0xFFF6F6F6),
+                  ),
+                ),
+                const SizedBox(height: 15),
 
-            // Input Kronologi
-            TextField(
-              controller: descController,
-              maxLines: 3,
-              decoration: InputDecoration(
-                labelText: "Kronologi Singkat",
-                alignLabelWithHint: true,
-                prefixIcon: const Icon(Icons.description, color: Color(0xFF1E56A0)),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-                filled: true,
-                fillColor: const Color(0xFFF6F6F6),
-              ),
-            ),
-            const SizedBox(height: 25),
+                // Input Kronologi
+                TextField(
+                  controller: descController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: "Kronologi Singkat",
+                    alignLabelWithHint: true,
+                    prefixIcon: const Icon(Icons.description, color: Color(0xFF1E56A0)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                    filled: true,
+                    fillColor: const Color(0xFFF6F6F6),
+                  ),
+                ),
+                const SizedBox(height: 15),
 
-            // Tombol Kirim
-            SizedBox(
-              width: double.infinity,
-              height: 55,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
+                // Upload Foto Section
+                const Text(
+                  "Upload Bukti Foto (Opsional)",
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF163172)),
+                ),
+                const SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () {
+                    // Simulasi upload foto
+                    setState(() {
+                      formPhotos.add("https://picsum.photos/200/300?random=${DateTime.now().millisecondsSinceEpoch}");
+                    });
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFFD6E4F0), width: 2),
+                      borderRadius: BorderRadius.circular(12),
+                      color: const Color(0xFFF6F6F6),
+                    ),
+                    child: Column(
+                      children: [
+                        const Icon(Icons.cloud_upload_outlined, color: Color(0xFF1E56A0), size: 40),
+                        const SizedBox(height: 8),
+                        const Text(
+                          "Tap untuk tambah foto",
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF1E56A0)),
+                        ),
+                        Text(
+                          "${formPhotos.length} foto dipilih",
+                          style: TextStyle(fontSize: 11, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                if (formPhotos.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 100,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: formPhotos.length,
+                      itemBuilder: (ctx, idx) => Stack(
+                        children: [
+                          Container(
+                            width: 100,
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              image: DecorationImage(
+                                image: NetworkImage(formPhotos[idx]),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () => setState(() => formPhotos.removeAt(idx)),
+                              child: Container(
+                                decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                                child: const Icon(Icons.close, color: Colors.white, size: 16),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 25),
+
+                // Tombol Kirim
+                SizedBox(
+                  width: double.infinity,
+                  height: 55,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF163172), // Warna Primary
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                   elevation: 5,
@@ -141,7 +227,9 @@ class LaporanScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-          ],
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -322,7 +410,12 @@ class LaporanScreen extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      // Nanti bisa navigasi ke detail screen disini
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => LaporanDetailScreen(report: report),
+                        ),
+                      );
                     },
                     icon: const Icon(Icons.visibility_outlined, size: 18),
                     label: const Text("Lihat Detail"),
