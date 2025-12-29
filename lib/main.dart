@@ -1,9 +1,10 @@
-// main.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'cubit/report_cubit.dart';
-import 'screens/main_page.dart';
+import 'controllers/report_cubit.dart';
+import 'views/splash_screen.dart';
+import 'views/login_screen.dart';
+import 'views/register_screen.dart';
+import 'views/main_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,31 +15,36 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider( // bungkus pakai BlocProvider biar Cubit bisa diakses di mana aja 
+    return BlocProvider(
       create: (context) => ReportCubit(),
       child: MaterialApp(
-        title: 'Anpundung',
         debugShowCheckedModeBanner: false,
-        // color pellet, diset global biar gampang
+        title: 'Anpundung',
         theme: ThemeData(
-          useMaterial3: true, // Biar makin modern stylenya
-          scaffoldBackgroundColor: const Color(0xFFF6F6F6), // Background utama
-          primaryColor: const Color(0xFF163172), // Warna biru gelap
-          colorScheme: ColorScheme.fromSwatch().copyWith(
-            primary: const Color(0xFF163172),
-            secondary: const Color(0xFF1E56A0), // Biru sedang
-            surface: const Color(0xFFD6E4F0), // Biru muda abu
-            background: const Color(0xFFF6F6F6),
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF163172),
+            brightness: Brightness.light,
           ),
-          textTheme: GoogleFonts.poppinsTextTheme(), // Font Poppins biar kekinian
+          fontFamily: 'Poppins',
           appBarTheme: const AppBarTheme(
             backgroundColor: Color(0xFF163172),
             foregroundColor: Colors.white,
             elevation: 0,
             centerTitle: true,
+            titleTextStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-        home: const MainPage(), // Halaman utamanya ini
+        home: const SplashScreen(),
+        routes: {
+          '/login': (context) => const LoginScreen(),
+          '/register': (context) => const RegisterScreen(),
+          '/main': (context) => const MainPage(),
+        },
       ),
     );
   }

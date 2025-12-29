@@ -53,7 +53,6 @@ class _BeritaDetailScreenState extends State<BeritaDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Gambar berita
             ClipRRect(
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(15),
@@ -73,13 +72,11 @@ class _BeritaDetailScreenState extends State<BeritaDetailScreen> {
                 ),
               ),
             ),
-            // Konten detail
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Tanggal
                   Text(
                     widget.date,
                     style: const TextStyle(
@@ -89,7 +86,6 @@ class _BeritaDetailScreenState extends State<BeritaDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // Judul
                   Text(
                     widget.title,
                     style: const TextStyle(
@@ -99,13 +95,11 @@ class _BeritaDetailScreenState extends State<BeritaDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Garis pemisah
                   Container(
                     height: 2,
                     color: const Color(0xFF1E56A0),
                   ),
                   const SizedBox(height: 16),
-                  // Konten lengkap
                   Text(
                     widget.description,
                     style: const TextStyle(
@@ -115,7 +109,6 @@ class _BeritaDetailScreenState extends State<BeritaDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  // Tombol share (opsional)
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -123,14 +116,14 @@ class _BeritaDetailScreenState extends State<BeritaDetailScreen> {
                       color: const Color(0xFF1E56A0),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.share, color: Colors.white),
-                        const SizedBox(width: 8),
+                        Icon(Icons.share, color: Colors.white),
+                        SizedBox(width: 8),
                         Text(
                           "Bagikan Berita",
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
