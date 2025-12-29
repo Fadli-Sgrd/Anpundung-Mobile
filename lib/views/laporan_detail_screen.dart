@@ -7,7 +7,6 @@ class LaporanDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine status colors
     Color statusColor;
     Color statusBg;
     IconData statusIcon;
@@ -140,11 +139,11 @@ class LaporanDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  const Row(
                     children: [
-                      const Icon(Icons.description_outlined, color: Color(0xFF1E56A0), size: 20),
-                      const SizedBox(width: 8),
-                      const Text(
+                      Icon(Icons.description_outlined, color: Color(0xFF1E56A0), size: 20),
+                      SizedBox(width: 8),
+                      Text(
                         'Kronologi Laporan',
                         style: TextStyle(
                           fontSize: 14,
@@ -168,7 +167,7 @@ class LaporanDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Timeline / Status Progress
+            // Timeline
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -185,11 +184,11 @@ class LaporanDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  const Row(
                     children: [
-                      const Icon(Icons.timeline, color: Color(0xFF1E56A0), size: 20),
-                      const SizedBox(width: 8),
-                      const Text(
+                      Icon(Icons.timeline, color: Color(0xFF1E56A0), size: 20),
+                      SizedBox(width: 8),
+                      Text(
                         'Perkembangan',
                         style: TextStyle(
                           fontSize: 14,
@@ -208,7 +207,7 @@ class LaporanDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Komentar & Update
+            // Tindak Lanjut
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -225,11 +224,11 @@ class LaporanDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  const Row(
                     children: [
-                      const Icon(Icons.chat_outlined, color: Color(0xFF1E56A0), size: 20),
-                      const SizedBox(width: 8),
-                      const Text(
+                      Icon(Icons.chat_outlined, color: Color(0xFF1E56A0), size: 20),
+                      SizedBox(width: 8),
+                      Text(
                         'Tindak Lanjut',
                         style: TextStyle(
                           fontSize: 14,
