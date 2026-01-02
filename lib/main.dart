@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'controllers/report_cubit.dart';
-import 'views/splash_screen.dart';
-import 'views/login_screen.dart';
-import 'views/register_screen.dart';
-import 'views/main_page.dart';
+import 'core/app_router.dart';
+import 'mvc/auth/bloc/login_cubit.dart';
+import 'mvc/auth/data/auth_repository.dart';
+import 'mvc/report/bloc/report_cubit.dart';
+import 'mvc/report/data/report_repository.dart';
+import 'mvc/auth/view/login_screen.dart';
+import 'mvc/auth/view/register_screen.dart';
+import 'mvc/report/view/laporan_screen.dart';
+import 'mvc/splash/view/splash_screen.dart';
+import 'mvc/main/view/main_page.dart';
+import 'mvc/settings/view/settings_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,36 +21,42 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ReportCubit(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Anpundung',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF163172),
-            brightness: Brightness.light,
+    // 1. Dependency Injection Repository
+    final authRepository = AuthRepository();
+    final reportRepository = ReportRepository();
+
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider.value(value: authRepository),
+        RepositoryProvider.value(value: reportRepository),
+      ],
+      child: MultiBlocProvider(
+        // 2. Global Blocs
+        providers: [
+          BlocProvider(create: (context) => LoginCubit(authRepository)),
+          BlocProvider(create: (context) => ReportCubit(reportRepository)),
+        ],
+        child: MaterialApp(
+          title: 'Anpundung Mobile',
+          theme: ThemeData(
+            fontFamily: 'Poppins', // Sesuai design original
+            primarySwatch: Colors.blue,
+            useMaterial3: true,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          fontFamily: 'Poppins',
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFF163172),
-            foregroundColor: Colors.white,
-            elevation: 0,
-            centerTitle: true,
-            titleTextStyle: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          // 3. Navigation Setup
+          initialRoute: AppRouter.login,
+
+          routes: {
+            // Mapping Routes dari AppRouter
+            AppRouter.login: (context) => const LoginScreen(),
+            AppRouter.register: (context) => const RegisterScreen(),
+            AppRouter.main: (context) => const MainPage(),
+            AppRouter.laporan: (context) => const LaporanScreen(),
+            // Tambahkan route splash screen jika perlu
+            '/splash': (context) => const SplashScreen(),
+          },
         ),
-        home: const SplashScreen(),
-        routes: {
-          '/login': (context) => const LoginScreen(),
-          '/register': (context) => const RegisterScreen(),
-          '/main': (context) => const MainPage(),
-        },
       ),
     );
   }

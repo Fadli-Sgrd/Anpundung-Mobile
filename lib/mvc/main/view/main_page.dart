@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../components/navbar/bottom_navbar.dart';
-import 'home_screen.dart';
-import 'berita_screen.dart';
-import 'laporan_screen.dart';
-import 'profile_screen.dart';
+import '../../../components/navbar/bottom_navbar.dart';
+import '../../home/view/home_screen.dart';
+import '../../news/view/berita_screen.dart';
+import '../../report/view/laporan_screen.dart';
+import '../../profile/view/profile_screen.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

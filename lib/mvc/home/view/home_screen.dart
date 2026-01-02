@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../components/cards/stat_card.dart';
-import '../components/buttons/menu_button.dart';
-import '../components/cards/news_card.dart';
-import '../components/common/header_section.dart';
-import 'edukasi_screen.dart';
-import 'panduan_screen.dart';
-import 'darurat_screen.dart';
-import 'berita_screen.dart';
+import '../../../components/cards/stat_card.dart';
+import '../../../components/buttons/menu_button.dart';
+import '../../../components/cards/news_card.dart';
+import '../../../components/common/header_section.dart';
+import '../../education/view/edukasi_screen.dart';
+import '../../settings/view/panduan_screen.dart';
+import '../../emergency/view/darurat_screen.dart';
+import '../../news/view/berita_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -31,11 +31,7 @@ class HomeScreen extends StatelessWidget {
                     count: "12",
                     icon: Icons.folder_copy_outlined,
                   ),
-                  StatItemData(
-                    label: "Proses",
-                    count: "5",
-                    icon: Icons.loop,
-                  ),
+                  StatItemData(label: "Proses", count: "5", icon: Icons.loop),
                   StatItemData(
                     label: "Selesai",
                     count: "7",
@@ -154,9 +150,11 @@ class HomeScreen extends StatelessWidget {
                       clipBehavior: Clip.none,
                       itemBuilder: (context, index) {
                         return const NewsCard(
-                          title: "VIRALLL!!! Bupati Konoha melakukan Pungli kepada remaja Gen Z!!",
+                          title:
+                              "VIRALLL!!! Bupati Konoha melakukan Pungli kepada remaja Gen Z!!",
                           date: "20 Des 2025",
-                          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkCyl8EjhekDpx2-CiPDmPPQX_m2jjawdeag&s",
+                          image:
+                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkCyl8EjhekDpx2-CiPDmPPQX_m2jjawdeag&s",
                           description: "",
                           isHorizontal: true,
                         );

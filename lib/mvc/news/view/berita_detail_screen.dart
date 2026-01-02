@@ -25,12 +25,12 @@ class _BeritaDetailScreenState extends State<BeritaDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Detail Berita"),
-        backgroundColor: const Color(0xFF163172),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+        title: const Text(
+          "Detail Berita",
+          style: TextStyle(color: Colors.white),
         ),
+        backgroundColor: const Color(0xFF163172),
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             icon: Icon(
@@ -41,7 +41,11 @@ class _BeritaDetailScreenState extends State<BeritaDetailScreen> {
               setState(() => isBookmarked = !isBookmarked);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(isBookmarked ? "Ditambahkan ke tersimpan" : "Dihapus dari tersimpan"),
+                  content: Text(
+                    isBookmarked
+                        ? "Ditambahkan ke tersimpan"
+                        : "Dihapus dari tersimpan",
+                  ),
                   duration: const Duration(seconds: 1),
                 ),
               );
@@ -67,7 +71,11 @@ class _BeritaDetailScreenState extends State<BeritaDetailScreen> {
                   height: 250,
                   color: const Color(0xFFD6E4F0),
                   child: const Center(
-                    child: Icon(Icons.broken_image, color: Colors.grey, size: 50),
+                    child: Icon(
+                      Icons.broken_image,
+                      color: Colors.grey,
+                      size: 50,
+                    ),
                   ),
                 ),
               ),
@@ -95,10 +103,7 @@ class _BeritaDetailScreenState extends State<BeritaDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Container(
-                    height: 2,
-                    color: const Color(0xFF1E56A0),
-                  ),
+                  Container(height: 2, color: const Color(0xFF1E56A0)),
                   const SizedBox(height: 16),
                   Text(
                     widget.description,

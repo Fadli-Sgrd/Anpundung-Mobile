@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/report_model.dart';
+import '../data/report_model.dart'; // Fixed Import
 
 class LaporanDetailScreen extends StatelessWidget {
   final ReportModel report;
@@ -28,13 +28,13 @@ class LaporanDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
       appBar: AppBar(
-        title: const Text('Detail Laporan', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Detail Laporan',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         backgroundColor: const Color(0xFF163172),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -59,7 +59,10 @@ class LaporanDetailScreen extends StatelessWidget {
                       children: [
                         Text(
                           'Status Laporan',
-                          style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 12,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -106,12 +109,19 @@ class LaporanDetailScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      const Icon(Icons.location_on_outlined, size: 16, color: Colors.grey),
+                      const Icon(
+                        Icons.location_on_outlined,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
                           report.location,
-                          style: const TextStyle(color: Colors.grey, fontSize: 13),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 13,
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -141,7 +151,11 @@ class LaporanDetailScreen extends StatelessWidget {
                 children: [
                   const Row(
                     children: [
-                      Icon(Icons.description_outlined, color: Color(0xFF1E56A0), size: 20),
+                      Icon(
+                        Icons.description_outlined,
+                        color: Color(0xFF1E56A0),
+                        size: 20,
+                      ),
                       SizedBox(width: 8),
                       Text(
                         'Kronologi Laporan',
@@ -200,11 +214,20 @@ class LaporanDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   _buildProgressStep('Diterima', true, true),
-                  _buildProgressStep('Diverifikasi', report.status != 'Terkirim', report.status == 'Diproses' || report.status == 'Selesai'),
-                  _buildProgressStep('Diselesaikan', report.status == 'Selesai', false),
+                  _buildProgressStep(
+                    'Diverifikasi',
+                    report.status != 'Terkirim',
+                    report.status == 'Diproses' || report.status == 'Selesai',
+                  ),
+                  _buildProgressStep(
+                    'Diselesaikan',
+                    report.status == 'Selesai',
+                    false,
+                  ),
                 ],
               ),
             ),
+            // ... (Rest of content identical to original)
             const SizedBox(height: 20),
 
             // Tindak Lanjut
@@ -226,7 +249,11 @@ class LaporanDetailScreen extends StatelessWidget {
                 children: [
                   const Row(
                     children: [
-                      Icon(Icons.chat_outlined, color: Color(0xFF1E56A0), size: 20),
+                      Icon(
+                        Icons.chat_outlined,
+                        color: Color(0xFF1E56A0),
+                        size: 20,
+                      ),
                       SizedBox(width: 8),
                       Text(
                         'Tindak Lanjut',
@@ -247,7 +274,11 @@ class LaporanDetailScreen extends StatelessWidget {
                     ),
                     child: Text(
                       'Laporan Anda sedang diproses. Anda akan menerima notifikasi untuk setiap pembaruan status. Terima kasih atas kontribusi Anda dalam memberantas pungli.',
-                      style: TextStyle(color: Colors.grey[700], fontSize: 12, height: 1.5),
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 12,
+                        height: 1.5,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -276,20 +307,28 @@ class LaporanDetailScreen extends StatelessWidget {
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              color: isCompleted ? Colors.green : (isActive ? const Color(0xFF1E56A0) : Colors.grey[300]),
+              color: isCompleted
+                  ? Colors.green
+                  : (isActive ? const Color(0xFF1E56A0) : Colors.grey[300]),
               shape: BoxShape.circle,
             ),
             child: isCompleted
                 ? const Icon(Icons.check, size: 14, color: Colors.white)
-                : (isActive ? const Icon(Icons.circle, size: 8, color: Colors.white) : null),
+                : (isActive
+                      ? const Icon(Icons.circle, size: 8, color: Colors.white)
+                      : null),
           ),
           const SizedBox(width: 12),
           Text(
             label,
             style: TextStyle(
               fontSize: 13,
-              fontWeight: isActive || isCompleted ? FontWeight.bold : FontWeight.normal,
-              color: isCompleted || isActive ? const Color(0xFF163172) : Colors.grey[400],
+              fontWeight: isActive || isCompleted
+                  ? FontWeight.bold
+                  : FontWeight.normal,
+              color: isCompleted || isActive
+                  ? const Color(0xFF163172)
+                  : Colors.grey[400],
             ),
           ),
         ],
