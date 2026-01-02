@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../data/saved_news_store.dart';
+import '../../../data/saved_news_store.dart';
 import 'berita_detail_screen.dart';
 
 class BeritaScreen extends StatefulWidget {
@@ -89,15 +89,31 @@ class _BeritaScreenState extends State<BeritaScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(20, 15, 20, 12),
-                  child: Text(
-                    "Berita Hari Ini",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 15, 20, 12),
+                  child: Row(
+                    children: [
+                      if (Navigator.canPop(context))
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      const Text(
+                        "Berita Hari Ini",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 // Search Bar

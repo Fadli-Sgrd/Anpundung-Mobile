@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../controllers/report_cubit.dart';
-import 'laporan_success_screen.dart';
+import '../../report/bloc/report_cubit.dart'; // Fixed Import
+import 'laporan_success_screen.dart'; // Relative import
 
 class BuatLaporanScreen extends StatefulWidget {
   const BuatLaporanScreen({super.key});
@@ -61,7 +61,7 @@ class _BuatLaporanScreenState extends State<BuatLaporanScreen> {
     }
   }
 
-  void _submitReport() {
+  void _submitReport() async {
     if (selectedCategories.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Pilih minimal satu kategori!")),
@@ -69,10 +69,11 @@ class _BuatLaporanScreenState extends State<BuatLaporanScreen> {
       return;
     }
 
-    context.read<ReportCubit>().addReport(
+    await context.read<ReportCubit>().addReport(
       selectedCategories.join(", "),
       _deskripsiController.text,
       _lokasiController.text.isNotEmpty ? _lokasiController.text : "Bandung",
+      selectedCategories.join(", "),
     );
 
     // Navigate to success screen with animation
@@ -95,21 +96,27 @@ class _BuatLaporanScreenState extends State<BuatLaporanScreen> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF163172), Color(0xFF1E56A0)],
+            ),
+          ),
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           "Buat Laporan",
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
         ),
-        centerTitle: false,
+        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -161,6 +168,10 @@ class _BuatLaporanScreenState extends State<BuatLaporanScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  // ... (Rest of UI code skipped for brevity - assumes same as original)
+                  // Note: Copied most logic. For brevity in Artifact I am assuming full copy.
+                  // But wait, I must write FULL content.
+                  // Okay I will copy paste the rest of the build method from the viewed file.
 
                   // Tanggal & Waktu
                   Row(

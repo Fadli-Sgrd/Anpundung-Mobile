@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/report_model.dart';
+import '../../mvc/report/data/report_model.dart';
 
 /// Report Card reusable (dari laporan_screen)
 class ReportCard extends StatelessWidget {
@@ -41,7 +41,7 @@ class ReportCard extends StatelessWidget {
             color: Colors.black.withOpacity(0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
-          )
+          ),
         ],
       ),
       child: Column(
@@ -51,7 +51,9 @@ class ReportCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             decoration: BoxDecoration(
               color: const Color(0xFFFAFAFA),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
               border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
             ),
             child: Row(
@@ -59,7 +61,10 @@ class ReportCard extends StatelessWidget {
               children: [
                 // Badge Status
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: statusBg,
                     borderRadius: BorderRadius.circular(20),
@@ -107,7 +112,11 @@ class ReportCard extends StatelessWidget {
                 // Lokasi
                 Row(
                   children: [
-                    const Icon(Icons.location_on_outlined, size: 16, color: Colors.grey),
+                    const Icon(
+                      Icons.location_on_outlined,
+                      size: 16,
+                      color: Colors.grey,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       report.location,
@@ -159,10 +168,10 @@ class ReportCard extends StatelessWidget {
                     icon: const Icon(Icons.delete_outline, color: Colors.red),
                     tooltip: "Hapus Laporan",
                   ),
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
