@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../components/cards/profile_card.dart';
 import '../../../components/common/aesthetic_tile.dart';
+import '../../auth/bloc/logout_cubit.dart';
 import 'edit_profile_screen.dart';
 import '../../report/view/laporan_screen.dart';
 import '../../news/view/berita_tersimpan_screen.dart';
@@ -14,6 +16,27 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocListener<LogoutCubit, LogoutState>(
+      listener: (context, state) {
+        if (state is LogoutSuccess) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/login',
+            (route) => false,
+          );
+        } else if (state is LogoutFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Error: ${state.error}"),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      child: _buildScaffold(context),
+    );
+  }
+
+  Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
       appBar: AppBar(
@@ -194,7 +217,31 @@ class ProfileScreen extends StatelessWidget {
 
             // LOGOUT BUTTON
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text("Konfirmasi Keluar"),
+                    content: const Text("Anda yakin ingin keluar dari akun?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        child: const Text("Batal"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          context.read<LogoutCubit>().logout();
+                        },
+                        child: const Text(
+                          "Keluar",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
               style: TextButton.styleFrom(
                 foregroundColor: Colors.red[400],
                 padding: const EdgeInsets.symmetric(vertical: 15),

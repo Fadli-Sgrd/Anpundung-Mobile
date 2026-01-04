@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,10 +17,14 @@ class DioClient {
     // Setup Base URL & Timeout
     _dio = Dio(
       BaseOptions(
-        // Ganti sama URL API asli / localhost (pake 10.0.2.2 kalo emulator android)
-        baseUrl: 'https://reqres.in/api',
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
+        // ⚠️ PENTING: Update baseUrl sesuai backend Anda
+        // Untuk Emulator Android: http://10.0.2.2:8000/api
+        // Untuk Device Fisik: http://192.168.1.14:8000/api (Konfigurasi device Anda)
+        // Untuk Production: https://api.yourdomain.com/api
+        baseUrl: 'http://192.168.1.14:8000/api', // Device IP Anda
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        sendTimeout: const Duration(seconds: 30),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -31,6 +36,10 @@ class DioClient {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
+          debugPrint('📤 [Dio Request] ${options.method} ${options.path}');
+          debugPrint('   Headers: ${options.headers}');
+          debugPrint('   Data: ${options.data}');
+          
           // Ambil Token dari SharedPrefs (Modul 13: Auth Token)
           final prefs = await SharedPreferences.getInstance();
           final String? token = prefs.getString('auth_token');
@@ -42,10 +51,18 @@ class DioClient {
           return handler.next(options);
         },
         onError: (DioException e, handler) {
-          // Global Error Handling
-          // Bisa tambah logic handle 401 (Unauthorized) -> Logout otomatis
+          debugPrint('❌ [Dio Error] Type: ${e.type}');
+          debugPrint('   Message: ${e.message}');
+          debugPrint('   Status: ${e.response?.statusCode}');
+          debugPrint('   Path: ${e.requestOptions.path}');
           return handler.next(e);
         },
+        onResponse: (response, handler) {
+          debugPrint('✅ [Dio Response] Status: ${response.statusCode}');
+          debugPrint('   Path: ${response.requestOptions.path}');
+          debugPrint('   Data: ${response.data}');
+          return handler.next(response);
+        }
       ),
     );
 

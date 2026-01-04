@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/app_router.dart';
 import 'mvc/auth/bloc/login_cubit.dart';
+import 'mvc/auth/bloc/register_cubit.dart';
+import 'mvc/auth/bloc/logout_cubit.dart';
 import 'mvc/auth/data/auth_repository.dart';
 import 'mvc/report/bloc/report_cubit.dart';
 import 'mvc/report/data/report_repository.dart';
+import 'mvc/news/bloc/news_cubit.dart';
+import 'mvc/news/data/news_repository.dart';
+import 'mvc/profile/bloc/profile_cubit.dart';
+import 'mvc/profile/data/profile_repository.dart';
+import 'mvc/dashboard/bloc/dashboard_cubit.dart';
+import 'mvc/dashboard/data/dashboard_repository.dart';
 import 'mvc/auth/view/login_screen.dart';
 import 'mvc/auth/view/register_screen.dart';
 import 'mvc/report/view/laporan_screen.dart';
@@ -24,17 +32,28 @@ class MyApp extends StatelessWidget {
     // 1. Dependency Injection Repository
     final authRepository = AuthRepository();
     final reportRepository = ReportRepository();
+    final newsRepository = NewsRepository();
+    final profileRepository = ProfileRepository();
+    final dashboardRepository = DashboardRepository();
 
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: authRepository),
         RepositoryProvider.value(value: reportRepository),
+        RepositoryProvider.value(value: newsRepository),
+        RepositoryProvider.value(value: profileRepository),
+        RepositoryProvider.value(value: dashboardRepository),
       ],
       child: MultiBlocProvider(
         // 2. Global Blocs
         providers: [
           BlocProvider(create: (context) => LoginCubit(authRepository)),
+          BlocProvider(create: (context) => RegisterCubit(authRepository)),
+          BlocProvider(create: (context) => LogoutCubit(authRepository)),
           BlocProvider(create: (context) => ReportCubit(reportRepository)),
+          BlocProvider(create: (context) => NewsCubit(newsRepository)),
+          BlocProvider(create: (context) => ProfileCubit(profileRepository)),
+          BlocProvider(create: (context) => DashboardCubit(dashboardRepository)),
         ],
         child: MaterialApp(
           title: 'Anpundung Mobile',

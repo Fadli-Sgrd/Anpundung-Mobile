@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../auth/bloc/logout_cubit.dart';
+import '../../auth/data/auth_repository.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -16,6 +19,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocListener<LogoutCubit, LogoutState>(
+      listener: (context, state) {
+        if (state is LogoutLoading) {
+          // Show loading
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Sedang keluar...")),
+          );
+        } else if (state is LogoutSuccess) {
+          // Navigate to login
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/login',
+            (route) => false,
+          );
+        } else if (state is LogoutFailure) {
+          // Show error
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Error: ${state.error}"),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      child: _buildScaffold(),
+    );
+  }
+
+  Widget _buildScaffold() {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
       appBar: AppBar(
@@ -222,11 +253,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         TextButton(
                           onPressed: () {
                             Navigator.pop(ctx);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Anda telah keluar"),
-                              ),
-                            );
+                            // Call logout cubit
+                            context.read<LogoutCubit>().logout();
                           },
                           child: const Text(
                             "Keluar",
