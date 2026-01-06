@@ -21,7 +21,7 @@ class DioClient {
         // Untuk Emulator Android: http://10.0.2.2:8000/api
         // Untuk Device Fisik: http://192.168.1.14:8000/api (Konfigurasi device Anda)
         // Untuk Production: https://api.yourdomain.com/api
-        baseUrl: 'http://192.168.1.14:8000/api', // Device IP Anda
+        baseUrl: 'http://192.168.1.8:8000/api', // Device IP Anda
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),
         sendTimeout: const Duration(seconds: 30),
@@ -39,7 +39,7 @@ class DioClient {
           debugPrint('📤 [Dio Request] ${options.method} ${options.path}');
           debugPrint('   Headers: ${options.headers}');
           debugPrint('   Data: ${options.data}');
-          
+
           // Ambil Token dari SharedPrefs (Modul 13: Auth Token)
           final prefs = await SharedPreferences.getInstance();
           final String? token = prefs.getString('auth_token');
@@ -62,7 +62,7 @@ class DioClient {
           debugPrint('   Path: ${response.requestOptions.path}');
           debugPrint('   Data: ${response.data}');
           return handler.next(response);
-        }
+        },
       ),
     );
 

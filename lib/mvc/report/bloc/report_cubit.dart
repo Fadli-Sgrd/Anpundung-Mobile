@@ -49,33 +49,35 @@ class ReportCubit extends Cubit<ReportState> {
     String desc,
     String loc,
     String category,
+    String date,
   ) async {
-    // Optimistic Update or Wait for value
-    // For now simplistic approach:
     try {
-      final newReport = ReportModel(
-        id: DateTime.now().toString(),
+      await _repository.addReport(
         title: title,
         description: desc,
         location: loc,
-        category: category,
+        date: date,
+        categoryName: category,
       );
-      await _repository.addReport(newReport);
 
-      // Reload or Append manually
-      loadReports(); // Reload fresh data
+      // Reload fresh data
+      loadReports();
     } catch (e) {
       emit(ReportError("Gagal nambah laporan: $e"));
     }
   }
 
-  void deleteReport(String id) {
-    // Call Repo delete...
-    // Mock update state
-    if (state is ReportLoaded) {
-      final currentList = (state as ReportLoaded).reports;
-      final newList = currentList.where((item) => item.id != id).toList();
-      emit(ReportLoaded(newList));
+  Future<void> deleteReport(String id) async {
+    try {
+      await _repository.deleteReport(id);
+
+      if (state is ReportLoaded) {
+        final currentList = (state as ReportLoaded).reports;
+        final newList = currentList.where((item) => item.id != id).toList();
+        emit(ReportLoaded(newList));
+      }
+    } catch (e) {
+      emit(ReportError("Gagal menghapus laporan: $e"));
     }
   }
 }

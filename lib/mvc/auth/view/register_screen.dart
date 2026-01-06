@@ -63,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen>
         } else if (state is RegisterFailure) {
           // ❌ Register gagal - tampilkan error
           String errorMsg = state.message;
-          
+
           // Jika ada errors per field, tampilkan field error
           if (state.errors.isNotEmpty) {
             final errorList = state.errors.entries.toList();
@@ -74,7 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen>
               }
             }
           }
-          
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(errorMsg),
@@ -217,44 +217,75 @@ class _RegisterScreenState extends State<RegisterScreen>
                             BlocBuilder<RegisterCubit, RegisterState>(
                               builder: (context, state) {
                                 final isLoading = state is RegisterLoading;
-                                
+
                                 return ElevatedButton(
-                                  onPressed: isLoading ? null : () {
-                                    // Validasi lokal
-                                    if (_nameController.text.isEmpty) {
-                                      _showError(context, 'Nama tidak boleh kosong');
-                                      return;
-                                    }
-                                    if (_emailController.text.isEmpty) {
-                                      _showError(context, 'Email tidak boleh kosong');
-                                      return;
-                                    }
-                                    if (!_isValidEmail(_emailController.text)) {
-                                      _showError(context, 'Format email tidak valid');
-                                      return;
-                                    }
-                                    if (_passwordController.text.isEmpty) {
-                                      _showError(context, 'Password tidak boleh kosong');
-                                      return;
-                                    }
-                                    if (_passwordController.text.length < 8) {
-                                      _showError(context, 'Password minimal 8 karakter');
-                                      return;
-                                    }
-                                    if (_passwordController.text != _confirmPasswordController.text) {
-                                      _showError(context, 'Password tidak cocok');
-                                      return;
-                                    }
-                                    
-                                    // Panggil register
-                                    context.read<RegisterCubit>().register(
-                                      name: _nameController.text,
-                                      email: _emailController.text,
-                                      password: _passwordController.text,
-                                    );
-                                  },
+                                  onPressed: isLoading
+                                      ? null
+                                      : () {
+                                          // Validasi lokal
+                                          if (_nameController.text.isEmpty) {
+                                            _showError(
+                                              context,
+                                              'Nama tidak boleh kosong',
+                                            );
+                                            return;
+                                          }
+                                          if (_emailController.text.isEmpty) {
+                                            _showError(
+                                              context,
+                                              'Email tidak boleh kosong',
+                                            );
+                                            return;
+                                          }
+                                          if (!_isValidEmail(
+                                            _emailController.text,
+                                          )) {
+                                            _showError(
+                                              context,
+                                              'Format email tidak valid',
+                                            );
+                                            return;
+                                          }
+                                          if (_passwordController
+                                              .text
+                                              .isEmpty) {
+                                            _showError(
+                                              context,
+                                              'Password tidak boleh kosong',
+                                            );
+                                            return;
+                                          }
+                                          if (_passwordController.text.length <
+                                              8) {
+                                            _showError(
+                                              context,
+                                              'Password minimal 8 karakter',
+                                            );
+                                            return;
+                                          }
+                                          if (_passwordController.text !=
+                                              _confirmPasswordController.text) {
+                                            _showError(
+                                              context,
+                                              'Password tidak cocok',
+                                            );
+                                            return;
+                                          }
+
+                                          // Panggil register
+                                          context
+                                              .read<RegisterCubit>()
+                                              .register(
+                                                name: _nameController.text,
+                                                email: _emailController.text,
+                                                password:
+                                                    _passwordController.text,
+                                              );
+                                        },
                                   style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 16,
+                                    ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
@@ -268,9 +299,10 @@ class _RegisterScreenState extends State<RegisterScreen>
                                           height: 20,
                                           width: 20,
                                           child: CircularProgressIndicator(
-                                            valueColor: AlwaysStoppedAnimation<Color>(
-                                              Colors.white,
-                                            ),
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                  Colors.white,
+                                                ),
                                             strokeWidth: 2,
                                           ),
                                         )

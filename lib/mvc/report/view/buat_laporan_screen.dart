@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../report/bloc/report_cubit.dart'; // Fixed Import
-import 'laporan_success_screen.dart'; // Relative import
+import '../../report/bloc/report_cubit.dart';
+import 'laporan_success_screen.dart';
 
 class BuatLaporanScreen extends StatefulWidget {
   const BuatLaporanScreen({super.key});
@@ -12,6 +12,7 @@ class BuatLaporanScreen extends StatefulWidget {
 
 class _BuatLaporanScreenState extends State<BuatLaporanScreen> {
   final _lokasiController = TextEditingController();
+  final _judulController = TextEditingController(); // Added Title Controller
   final _deskripsiController = TextEditingController();
   String? selectedDate;
   String? selectedTime;
@@ -30,6 +31,7 @@ class _BuatLaporanScreenState extends State<BuatLaporanScreen> {
   @override
   void dispose() {
     _lokasiController.dispose();
+    _judulController.dispose();
     _deskripsiController.dispose();
     super.dispose();
   }
@@ -68,26 +70,53 @@ class _BuatLaporanScreenState extends State<BuatLaporanScreen> {
       );
       return;
     }
+    if (_judulController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Judul laporan wajib diisi!")),
+      );
+      return;
+    }
+
+    // Format Date from DD/MM/YYYY to YYYY-MM-DD
+    String dateToSend;
+    if (selectedDate == null) {
+      dateToSend = DateTime.now().toIso8601String().split('T')[0];
+    } else {
+      final parts = selectedDate!.split('/');
+      if (parts.length == 3) {
+        dateToSend = "${parts[2]}-${parts[1]}-${parts[0]}";
+      } else {
+        dateToSend = DateTime.now().toIso8601String().split('T')[0];
+      }
+    }
+
+    final mainCategory = selectedCategories.first;
+    final location = _lokasiController.text.isNotEmpty
+        ? _lokasiController.text
+        : "Bandung";
 
     await context.read<ReportCubit>().addReport(
-      selectedCategories.join(", "),
+      _judulController.text, // Use User Input Title
       _deskripsiController.text,
-      _lokasiController.text.isNotEmpty ? _lokasiController.text : "Bandung",
-      selectedCategories.join(", "),
+      location,
+      mainCategory,
+      dateToSend,
     );
 
     // Navigate to success screen with animation
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const LaporanSuccessScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        transitionDuration: const Duration(milliseconds: 500),
-      ),
-    );
+    if (context.mounted) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const LaporanSuccessScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 500),
+        ),
+      );
+    }
   }
 
   @override
@@ -164,14 +193,26 @@ class _BuatLaporanScreenState extends State<BuatLaporanScreen> {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 10),
+                        // Added TextField for location if user wants to type
+                        TextField(
+                          controller: _lokasiController,
+                          decoration: InputDecoration(
+                            hintText: "Contoh: Jl. Asia Afrika No. 1",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: Colors.grey[300]!),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 15, // Improved vertical padding
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // ... (Rest of UI code skipped for brevity - assumes same as original)
-                  // Note: Copied most logic. For brevity in Artifact I am assuming full copy.
-                  // But wait, I must write FULL content.
-                  // Okay I will copy paste the rest of the build method from the viewed file.
 
                   // Tanggal & Waktu
                   Row(
@@ -362,7 +403,43 @@ class _BuatLaporanScreenState extends State<BuatLaporanScreen> {
                   ),
                   const SizedBox(height: 20),
 
+                  // JUDUL LAPORAN FIELD
+                  const Text(
+                    "Judul Laporan",
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _judulController,
+                    decoration: InputDecoration(
+                      hintText: "Contoh: Ada Pungli di Jalan ABC",
+                      hintStyle: TextStyle(color: Colors.grey[400]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFF163172)),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 15,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
                   // Deskripsi
+                  const Text(
+                    "Deskripsi Detail",
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                  ),
+                  const SizedBox(height: 10),
                   TextField(
                     controller: _deskripsiController,
                     maxLines: 3,
@@ -473,7 +550,7 @@ class _BuatLaporanScreenState extends State<BuatLaporanScreen> {
               ),
             ),
           ),
-          // Submit Button - FIXED AT BOTTOM
+          // Submit Button
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(

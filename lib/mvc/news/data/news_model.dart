@@ -7,6 +7,7 @@ class NewsModel {
   final int userId;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final DateTime? publishedAt;
 
   const NewsModel({
     required this.id,
@@ -17,6 +18,7 @@ class NewsModel {
     required this.userId,
     required this.createdAt,
     required this.updatedAt,
+    this.publishedAt,
   });
 
   factory NewsModel.fromJson(Map<String, dynamic> json) {
@@ -25,7 +27,8 @@ class NewsModel {
       title: json['title'] as String? ?? '',
       slug: json['slug'] as String? ?? '',
       content: json['content'] as String? ?? '',
-      image: json['image'] as String?,
+      // Prioritize image_url from Controller accessor/resource
+      image: json['image_url'] as String? ?? json['image'] as String?,
       userId: json['user_id'] as int? ?? 0,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
@@ -33,6 +36,9 @@ class NewsModel {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'] as String)
           : DateTime.now(),
+      publishedAt: json['published_at'] != null
+          ? DateTime.tryParse(json['published_at'] as String)
+          : null,
     );
   }
 
