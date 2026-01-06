@@ -18,24 +18,35 @@ class ReportModel extends Equatable {
   });
 
   factory ReportModel.fromJson(Map<String, dynamic> json) {
+    // Handle nested category name if available, otherwise default
+    String catName = 'Lainnya';
+    if (json['kategori'] != null && json['kategori'] is Map) {
+      catName =
+          json['kategori']['judul'] ?? json['kategori']['nama'] ?? 'Lainnya';
+    }
+
     return ReportModel(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      location: json['location'],
-      category: json['category'] ?? 'Lainnya',
-      status: json['status'] ?? 'Pending',
+      // Use kode_laporan as the ID for API interactions
+      id:
+          json['kode_laporan']?.toString() ??
+          json['id']?.toString() ??
+          DateTime.now().millisecondsSinceEpoch.toString(),
+      title: json['judul'] ?? '',
+      description: json['deskripsi'] ?? '',
+      location: json['alamat'] ?? 'Bandung',
+      category: catName,
+      status: json['status_tindakan'] ?? 'Pending',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'title': title,
-      'description': description,
-      'location': location,
+      'kode_laporan': id,
+      'judul': title,
+      'deskripsi': description,
+      'alamat': location,
       'category': category,
-      'status': status,
+      'status_tindakan': status,
     };
   }
 

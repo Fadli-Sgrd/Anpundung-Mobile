@@ -20,15 +20,22 @@ class ReportCard extends StatelessWidget {
     Color statusColor;
     Color statusBg;
 
-    if (report.status == 'Selesai') {
+    // Normalize status to lowercase for comparison
+    final status = report.status.toLowerCase();
+
+    if (status == 'selesai') {
       statusColor = Colors.green;
       statusBg = Colors.green[50]!;
-    } else if (report.status == 'Diproses') {
+    } else if (status == 'proses' || status == 'diproses') {
+      statusColor = Colors.blue;
+      statusBg = Colors.blue[50]!;
+    } else if (status == 'ditolak') {
+      statusColor = Colors.red;
+      statusBg = Colors.red[50]!;
+    } else {
+      // Pending or others
       statusColor = Colors.orange;
       statusBg = Colors.orange[50]!;
-    } else {
-      statusColor = const Color(0xFF1E56A0);
-      statusBg = const Color(0xFFD6E4F0);
     }
 
     return Container(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../data/news_model.dart';
 
 class BeritaDetailScreen extends StatefulWidget {
   final String title;
@@ -13,6 +14,33 @@ class BeritaDetailScreen extends StatefulWidget {
     required this.image,
     required this.description,
   });
+
+  /// Factory constructor untuk menerima NewsModel
+  factory BeritaDetailScreen.fromNews({Key? key, required NewsModel news}) {
+    final months = [
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
+    ];
+    final dt = news.publishedAt ?? news.createdAt;
+    final date = "${dt.day} ${months[dt.month - 1]} ${dt.year}";
+    return BeritaDetailScreen(
+      key: key,
+      title: news.title,
+      date: date,
+      image: news.image ?? '',
+      description: news.content,
+    );
+  }
 
   @override
   State<BeritaDetailScreen> createState() => _BeritaDetailScreenState();

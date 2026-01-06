@@ -14,8 +14,18 @@ class NewsRepository {
 
       if (response.statusCode == 200) {
         debugPrint('✅ News fetched: ${response.data}');
-        
-        final List<dynamic> newsList = response.data['data'] ?? [];
+
+        dynamic responseData = response.data['data'];
+        List<dynamic> newsList = [];
+
+        // Handle Laravel Pagination (data is inside 'data' key of pagination object)
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('data')) {
+          newsList = responseData['data'] ?? [];
+        } else if (responseData is List) {
+          newsList = responseData;
+        }
+
         return newsList
             .map((news) => NewsModel.fromJson(news as Map<String, dynamic>))
             .toList();

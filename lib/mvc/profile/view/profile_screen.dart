@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../components/cards/profile_card.dart';
 import '../../../components/common/aesthetic_tile.dart';
 import '../../auth/bloc/logout_cubit.dart';
+import '../../auth/data/auth_repository.dart';
+import '../../report/bloc/report_cubit.dart';
 import 'edit_profile_screen.dart';
 import '../../report/view/laporan_screen.dart';
 import '../../news/view/berita_tersimpan_screen.dart';
@@ -11,18 +13,43 @@ import '../../settings/view/feedback_screen.dart';
 import '../../settings/view/about_screen.dart';
 import '../../settings/view/bantuan_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String _name = "Memuat...";
+  String _email = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+    // Load reports to get fresh stats
+    Future.microtask(() => context.read<ReportCubit>().loadReports());
+  }
+
+  Future<void> _loadUserData() async {
+    final userData = await AuthRepository().getUserData();
+    if (mounted) {
+      setState(() {
+        _name = userData['name'] ?? "Warga Bandung";
+        _email = userData['email'] ?? "";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<LogoutCubit, LogoutState>(
       listener: (context, state) {
         if (state is LogoutSuccess) {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            '/login',
-            (route) => false,
-          );
+          Navigator.of(
+            context,
+          ).pushNamedAndRemoveUntil('/login', (route) => false);
         } else if (state is LogoutFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -73,15 +100,37 @@ class ProfileScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
 
-            // Profile Card
-            const ProfileCard(
-              name: "Aubrey Karin",
-              email: "AubreyKarin@gmail.com",
-              imageUrl:
-                  "https://images.unsplash.com/photo-1702482527875-e16d07f0d91b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzB8fHBob3RvJTIwcHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D",
-              totalLaporan: 12,
-              diproses: 5,
-              selesai: 7,
+            // Profile Card with Dynamic Data
+            BlocBuilder<ReportCubit, ReportState>(
+              builder: (context, state) {
+                int total = 0;
+                int proses = 0;
+                int selesai = 0;
+
+                if (state is ReportLoaded) {
+                  total = state.reports.length;
+                  proses = state.reports
+                      .where(
+                        (r) =>
+                            r.status.toLowerCase() == 'proses' ||
+                            r.status.toLowerCase() == 'diproses',
+                      )
+                      .length;
+                  selesai = state.reports
+                      .where((r) => r.status.toLowerCase() == 'selesai')
+                      .length;
+                }
+
+                return ProfileCard(
+                  name: _name,
+                  email: _email,
+                  imageUrl:
+                      "https://ui-avatars.com/api/?name=${Uri.encodeComponent(_name)}&background=random",
+                  totalLaporan: total,
+                  diproses: proses,
+                  selesai: selesai,
+                );
+              },
             ),
 
             const SizedBox(height: 30),
