@@ -1,24 +1,47 @@
+/// ==========================================================
+/// FILE: auth_repository.dart
+/// DESKRIPSI: Repository untuk semua hal terkait Autentikasi
+///
+/// Repository ini menangani:
+/// - Login (masuk akun)
+/// - Register (daftar akun baru)
+/// - Logout (keluar akun)
+/// - Simpan/ambil data user dari local storage
+/// ==========================================================
+
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/dio_client.dart';
-import 'user_model.dart'; // Import Model
+import 'user_model.dart';
 
+/// Repository untuk mengelola autentikasi user
+///
+/// Contoh penggunaan:
+/// ```dart
+/// final authRepo = AuthRepository();
+/// final user = await authRepo.login('email@test.com', 'password');
+/// ```
 class AuthRepository {
   final DioClient _dioClient = DioClient();
 
-  // Login Method
+  // ====================================
+  // LOGIN
+  // Proses masuk ke akun yang sudah ada
+  // ====================================
   Future<UserModel> login(String email, String password) async {
     try {
+      // Kirim request ke API /login
       final response = await _dioClient.dio.post(
         '/login',
         data: {'email': email, 'password': password},
       );
 
-      // Pastikan response sukses (200)
+      // Kalau sukses (status 200)
       if (response.statusCode == 200) {
         final data = response.data['data'];
 
+        // Buat object user dari response
         final user = UserModel(
           id: data['id'].toString(),
           email: data['email'],
@@ -26,43 +49,52 @@ class AuthRepository {
           token: data['token'],
         );
 
-        // Simpan token & user
+        // Simpan token dan data user ke local storage
         await _saveToken(user.token);
         await _saveUser(user);
 
         return user;
       } else {
-        throw Exception(response.data['message'] ?? 'Login failed');
+        throw Exception(response.data['message'] ?? 'Login gagal');
       }
     } on DioException catch (e) {
-      // Handle error response dari server
+      // Handle error dari server
       if (e.response?.statusCode == 401) {
         throw Exception('Email atau password salah');
       }
       throw Exception(
-        e.response?.data['message'] ?? 'Login failed: ${e.message}',
+        e.response?.data['message'] ?? 'Login gagal: ${e.message}',
       );
     } catch (e) {
-      throw Exception('Login error: $e');
+      throw Exception('Error login: $e');
     }
   }
 
-  // Helper Simpan Token
+  // ====================================
+  // HELPER: Simpan Token ke Local Storage
+  // Token dipakai untuk autentikasi request selanjutnya
+  // ====================================
   Future<void> _saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
-    debugPrint("Token Saved: $token");
+    debugPrint("✅ Token tersimpan");
   }
 
-  // Helper Simpan User Data
+  // ====================================
+  // HELPER: Simpan Data User ke Local Storage
+  // Supaya bisa ditampilkan di profile tanpa request ulang
+  // ====================================
   Future<void> _saveUser(UserModel user) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('user_name', user.name ?? 'Warga Bandung');
     await prefs.setString('user_email', user.email);
-    debugPrint("User Data Saved: ${user.name}");
+    debugPrint("✅ Data user tersimpan: ${user.name}");
   }
 
-  // Get Current User Data
+  // ====================================
+  // GET USER DATA
+  // Ambil data user yang tersimpan di local storage
+  // ====================================
   Future<Map<String, String>> getUserData() async {
     final prefs = await SharedPreferences.getInstance();
     return {
@@ -71,30 +103,31 @@ class AuthRepository {
     };
   }
 
-  // Helper Clear Token (Logout)
+  // ====================================
+  // LOGOUT
+  // Proses keluar dari akun
+  // ====================================
   Future<void> logout() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-
-      // Get token untuk hit API logout
       final token = prefs.getString('auth_token');
 
+      // Kalau ada token, hit API logout dulu
       if (token != null) {
-        // Hit API logout
         await _dioClient.dio.post(
           '/logout',
           options: Options(headers: {'Authorization': 'Bearer $token'}),
         );
       }
 
-      // Clear token & user data
+      // Hapus semua data dari local storage
       await prefs.remove('auth_token');
       await prefs.remove('user_name');
       await prefs.remove('user_email');
-      debugPrint("Logout berhasil - Data dihapus");
+      debugPrint("✅ Logout berhasil - Data dihapus");
     } catch (e) {
-      debugPrint("Error logout: $e");
-      // Tetap clear token meski API error
+      debugPrint("❌ Error logout: $e");
+      // Tetap hapus data meski API error
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('auth_token');
       await prefs.remove('user_name');
@@ -103,26 +136,26 @@ class AuthRepository {
   }
 
   // ====================================
-  // Register Method - BARU
+  // REGISTER
+  // Proses daftar akun baru
   // ====================================
   Future<UserModel> register(String name, String email, String password) async {
     try {
-      debugPrint(
-        '📤 Register Request: name=$name, email=$email, password=$password',
-      );
+      debugPrint('📤 Register: name=$name, email=$email');
 
+      // Kirim request ke API /register
       final response = await _dioClient.dio.post(
         '/register',
         data: {'name': name, 'email': email, 'password': password},
       );
 
-      debugPrint('✅ Register Response Status: ${response.statusCode}');
-      debugPrint('✅ Register Response Data: ${response.data}');
+      debugPrint('✅ Response: ${response.statusCode}');
 
-      // Pastikan status sukses
+      // Kalau sukses (status 201 atau 200)
       if (response.statusCode == 201 || response.statusCode == 200) {
         final data = response.data['data'];
 
+        // Buat object user dari response
         final user = UserModel(
           id: data['user']['id'].toString(),
           email: data['user']['email'],
@@ -130,48 +163,48 @@ class AuthRepository {
           token: data['token'],
         );
 
-        debugPrint('✅ User created: ${user.name} (${user.email})');
+        debugPrint('✅ User terdaftar: ${user.name}');
 
-        // Simpan token & user
+        // Simpan token dan data user
         await _saveToken(user.token);
         await _saveUser(user);
 
         return user;
       } else {
-        throw Exception('Register failed: ${response.data['message']}');
+        throw Exception('Register gagal: ${response.data['message']}');
       }
     } on DioException catch (e) {
       debugPrint('❌ DioException: ${e.type}');
-      debugPrint('❌ Error Message: ${e.message}');
-      debugPrint('❌ Response Status: ${e.response?.statusCode}');
-      debugPrint('❌ Response Data: ${e.response?.data}');
+      debugPrint('❌ Response: ${e.response?.data}');
 
-      // Handle error dari backend
+      // Ambil error message dari backend
       final errors = e.response?.data['errors'];
       final message =
-          e.response?.data['message'] ?? e.message ?? 'Register failed';
+          e.response?.data['message'] ?? e.message ?? 'Register gagal';
 
       throw RegisterException(message: message, errors: errors ?? {});
     } catch (e) {
-      debugPrint('❌ Unexpected Error: $e');
-      throw RegisterException(message: 'Unexpected error: $e');
+      debugPrint('❌ Error: $e');
+      throw RegisterException(message: 'Error tidak terduga: $e');
     }
   }
 }
 
 // ====================================
-// Custom Exception - BARU
+// CUSTOM EXCEPTION
+// Exception khusus untuk error register dengan detail field
 // ====================================
 class RegisterException implements Exception {
-  final String message;
-  final Map<String, dynamic> errors;
+  final String message; // Pesan error utama
+  final Map<String, dynamic> errors; // Error per field (email, password, dll)
 
   RegisterException({required this.message, this.errors = const {}});
 
   @override
   String toString() => message;
 
-  // Helper untuk ambil error per field
+  /// Ambil error untuk field tertentu
+  /// Contoh: getFieldError('email') => 'Email sudah terdaftar'
   String? getFieldError(String fieldName) {
     if (errors.containsKey(fieldName)) {
       final errorList = errors[fieldName];

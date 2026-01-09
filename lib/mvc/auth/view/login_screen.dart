@@ -89,10 +89,22 @@ class _LoginScreenState extends State<LoginScreen>
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(25),
                           ),
-                          child: const Icon(
-                            Icons.shield_outlined,
-                            size: 50,
-                            color: Color(0xFF163172),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(25),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Image.asset(
+                                'assets/images/logo-anpundung.png',
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(
+                                    Icons.shield_outlined,
+                                    size: 50,
+                                    color: Color(0xFF163172),
+                                  );
+                                },
+                              ),
+                            ),
                           ),
                         ),
                       ),

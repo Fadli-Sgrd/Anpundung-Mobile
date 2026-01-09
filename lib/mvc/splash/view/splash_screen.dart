@@ -1,5 +1,18 @@
+/// ==========================================================
+/// FILE: splash_screen.dart
+/// DESKRIPSI: Halaman Splash (pembuka) saat aplikasi dibuka
+///
+/// Halaman ini ditampilkan pertama kali selama 4 detik dengan:
+/// - Logo aplikasi Anpundung
+/// - Animasi fade in dan scale
+/// - Loading indicator
+///
+/// Setelah 4 detik, otomatis pindah ke halaman Login
+/// ==========================================================
+
 import 'package:flutter/material.dart';
 
+/// Widget Splash Screen - halaman pembuka aplikasi
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -9,27 +22,37 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
+  // Controller untuk animasi
   late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
+  late Animation<double> _fadeAnimation; // Animasi muncul perlahan
+  late Animation<double> _scaleAnimation; // Animasi membesar
 
   @override
   void initState() {
     super.initState();
+
+    // Setup animasi selama 2 detik
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     );
+
+    // Animasi fade dari transparan ke opaque
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+
+    // Animasi scale dari kecil ke normal (dengan efek bouncy)
     _scaleAnimation = Tween<double>(
       begin: 0.5,
       end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
+
+    // Mulai animasi
     _controller.forward();
 
+    // Setelah 4 detik, pindah ke halaman login
     Future.delayed(const Duration(seconds: 4), () {
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/login');
@@ -39,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller.dispose(); // Jangan lupa dispose controller!
     super.dispose();
   }
 

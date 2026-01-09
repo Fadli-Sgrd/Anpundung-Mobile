@@ -7,6 +7,7 @@ import '../../auth/data/auth_repository.dart';
 import '../../education/view/edukasi_screen.dart';
 import '../../emergency/view/darurat_screen.dart';
 import '../../report/view/buat_laporan_screen.dart';
+import '../../settings/view/panduan_screen.dart';
 import '../../../components/cards/stat_card.dart';
 import '../../../components/cards/news_card.dart';
 import '../../../components/buttons/menu_button.dart';
@@ -252,7 +253,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: "Panduan",
                 icon: Icons.menu_book,
                 color: Colors.green,
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (ctx) => const PanduanScreen()),
+                  );
+                },
               ),
             ],
           ),
