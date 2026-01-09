@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../report/bloc/report_cubit.dart'; // Import updated path
-import '../data/report_model.dart'; // Import updated Data Model
-import '../../../components/cards/report_card.dart'; // Path components
-import 'laporan_detail_screen.dart'; // Relative path same folder
-import 'buat_laporan_screen.dart'; // Relative path same folder
-import '../../../components/dialogs/delete_dialog.dart'; // Import custom dialog
+import '../../report/bloc/report_cubit.dart';
+import '../../../components/cards/report_card.dart';
+import 'laporan_detail_screen.dart';
+import 'buat_laporan_screen.dart';
+import '../../../components/dialogs/delete_dialog.dart';
 
 class LaporanScreen extends StatefulWidget {
   const LaporanScreen({super.key});

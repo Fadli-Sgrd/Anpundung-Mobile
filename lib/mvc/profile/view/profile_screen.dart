@@ -9,9 +9,8 @@ import 'edit_profile_screen.dart';
 import '../../report/view/laporan_screen.dart';
 import '../../news/view/berita_tersimpan_screen.dart';
 import '../../settings/view/settings_screen.dart';
-import '../../settings/view/feedback_screen.dart';
+import '../../settings/view/kontak_screen.dart';
 import '../../settings/view/about_screen.dart';
-import '../../settings/view/bantuan_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -208,16 +207,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
             ),
             AestheticTile(
-              icon: Icons.star_rounded,
-              color: Colors.amber,
-              title: "Rating & Feedback",
-              subtitle: "Bagikan pendapat Anda",
+              icon: Icons.contact_mail_rounded,
+              color: Colors.teal,
+              title: "Kontak",
+              subtitle: "Hubungi tim admin",
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const FeedbackScreen(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const KontakScreen()),
                 );
               },
             ),
@@ -231,20 +228,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const SettingsScreen(),
-                  ),
-                );
-              },
-            ),
-            AestheticTile(
-              icon: Icons.help_outline_rounded,
-              color: Colors.teal,
-              title: "Bantuan & FAQ",
-              subtitle: "FAQ & Kontak Admin",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const BantuanScreen(),
                   ),
                 );
               },

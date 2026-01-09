@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/logout_cubit.dart';
-import '../../auth/data/auth_repository.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -23,15 +22,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
       listener: (context, state) {
         if (state is LogoutLoading) {
           // Show loading
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Sedang keluar...")),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text("Sedang keluar...")));
         } else if (state is LogoutSuccess) {
           // Navigate to login
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            '/login',
-            (route) => false,
-          );
+          Navigator.of(
+            context,
+          ).pushNamedAndRemoveUntil('/login', (route) => false);
         } else if (state is LogoutFailure) {
           // Show error
           ScaffoldMessenger.of(context).showSnackBar(

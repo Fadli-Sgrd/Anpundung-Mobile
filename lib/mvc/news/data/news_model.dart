@@ -1,13 +1,28 @@
+/// ==========================================================
+/// FILE: news_model.dart
+/// DESKRIPSI: Model data untuk Berita
+///
+/// Model ini merepresentasikan satu artikel berita:
+/// - id: ID unik berita
+/// - title: Judul berita
+/// - slug: URL-friendly title
+/// - content: Isi berita lengkap
+/// - image: URL gambar berita
+/// - createdAt: Tanggal dibuat
+/// - publishedAt: Tanggal dipublikasikan
+/// ==========================================================
+
+/// Model Berita - menyimpan data satu artikel berita
 class NewsModel {
-  final int id;
-  final String title;
-  final String slug;
-  final String content;
-  final String? image;
-  final int userId;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final DateTime? publishedAt;
+  final int id; // ID unik dari database
+  final String title; // Judul berita
+  final String slug; // URL-friendly (untuk link)
+  final String content; // Isi berita lengkap
+  final String? image; // URL gambar (opsional)
+  final int userId; // ID penulis berita
+  final DateTime createdAt; // Tanggal dibuat
+  final DateTime updatedAt; // Tanggal terakhir diupdate
+  final DateTime? publishedAt; // Tanggal dipublikasikan
 
   const NewsModel({
     required this.id,
@@ -21,13 +36,14 @@ class NewsModel {
     this.publishedAt,
   });
 
+  /// Buat NewsModel dari JSON response API
   factory NewsModel.fromJson(Map<String, dynamic> json) {
     return NewsModel(
       id: json['id'] as int? ?? 0,
       title: json['title'] as String? ?? '',
       slug: json['slug'] as String? ?? '',
       content: json['content'] as String? ?? '',
-      // Prioritize image_url from Controller accessor/resource
+      // Prioritas: image_url dulu, baru image
       image: json['image_url'] as String? ?? json['image'] as String?,
       userId: json['user_id'] as int? ?? 0,
       createdAt: json['created_at'] != null
